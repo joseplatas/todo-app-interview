@@ -8,19 +8,20 @@ interface Todo {
 }
 
 const TodoContainer: React.FC = () => {
-    const [todos, setTodos] = useState<Todo[]>([]);
-    const [inputValue, setInputValue] = useState<string>('');
+    const [todos, setTodos] = useState<Todo[]>([{ id: 1, text: 'This is an important todo', completed: false }]);
+    const [todoValue, settodoValue] = useState<string>('');
+    const [todoFilter, setTodoFilter] = useState<string>('all');
 
     const addTodo = () => {
-        if (inputValue.trim() === '') return;
+        if (todoValue.trim() === '') return;
 
         const newTodo: Todo = {
             id: Date.now(),
-            text: inputValue,
+            text: todoValue,
             completed: false,
         };
         setTodos([...todos, newTodo]);
-        setInputValue('');
+        settodoValue('');
     };
 
     const toggleTodo = (id: number) => {
@@ -40,11 +41,11 @@ const TodoContainer: React.FC = () => {
         <Menu attached="top">
           
           <MenuMenu position="right">
-          <Dropdown item icon='filter' text='Filter' simple>
+          <Dropdown value={todoFilter} item icon='filter' text='Filter' simple>
               <DropdownMenu>
-                <DropdownItem>All</DropdownItem>
-                <DropdownItem>Completed</DropdownItem>
-                <DropdownItem>Pending</DropdownItem>
+                <DropdownItem active={todoFilter == "all"} value="all" onClick={(_, {value})=> setTodoFilter(value as string)}>All</DropdownItem>
+                <DropdownItem active={todoFilter == "completed"} value="completed"  onClick={(_, {value})=> setTodoFilter(value as string)}>Completed</DropdownItem>
+                <DropdownItem active={todoFilter == "pending"} value="pending" onClick={(_, {value})=> setTodoFilter(value as string)}>Pending</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </MenuMenu>
@@ -73,8 +74,8 @@ const TodoContainer: React.FC = () => {
           <form onSubmit={(e) => { e.preventDefault(); addTodo(); }}>
             <Input
               type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              value={todoValue}
+              onChange={(e) => settodoValue(e.target.value)}
               placeholder="Enter a new todo"
             />
             <Button type="submit" primary>
