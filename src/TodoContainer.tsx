@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { v4 as guid } from "uuid";
-import { Button, Checkbox, Container, Dropdown, DropdownItem, DropdownMenu, Header, Icon, Input, List, Menu, MenuMenu, Segment } from 'semantic-ui-react';
+import { Container, Header, Segment } from 'semantic-ui-react';
+import TodoFilter from './TodoFilter';
+import TodoList from './TodoList';
+import TodoForm from './TodoForm';
+import './TodoContainer.css';
 
-interface Todo {
+export interface Todo {
   id: string;
   text: string;
   completed: boolean;
@@ -17,7 +21,7 @@ const firstSampleTodo: Todo = {
 const TodoContainer: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([firstSampleTodo]);
   const [todoValue, setTodoValue] = useState<string>('');
-  const [todoFilter, setTodoFilter] = useState<string>('all');
+  const [todoFilter, setTodoFilter] = useState<string>('All');
 
   const addTodo = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,62 +53,21 @@ const TodoContainer: React.FC = () => {
   });
 
   return (
-    <Container style={{ max: "600px" }}>
+    <Container className="todo-container">
       <Header as='h1'>Todo List</Header>
-
-      <Menu attached="top">
-
-        <MenuMenu position="right">
-          <Dropdown value={todoFilter} item icon='filter' text='Filter' simple>
-            <DropdownMenu>
-              {["All", "Completed", "Pending"].map(option => (
-                <DropdownItem
-                  key={option}
-                  active={todoFilter === option}
-                  value={option}
-                  onClick={(_, { value }) => setTodoFilter(value as string)}
-                >
-                  {option}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-        </MenuMenu>
-      </Menu>
+      <TodoFilter todoFilter={todoFilter} setTodoFilter={setTodoFilter} />
       <Segment attached="bottom">
-        <List divided>
-          {filteredTodos.map((todo, idx) => (
-            <List.Item key={idx} style={{ padding: "20px 0px" }}>
-              <List.Content floated="right">
-                <Button size="small" icon color="red" onClick={() => removeTodo(todo.id)}>
-                  <Icon name="trash" />
-                </Button>
-              </List.Content>
-
-              <List.Content style={{ textAlign: "left", display: "flex" }}>
-                <Checkbox toggle checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
-                <Header as="h3" style={{ display: "inline-block" }}>
-                  <span style={{ marginLeft: "10px", textDecoration: todo.completed ? 'line-through' : 'none' }}>
-                    {todo.text}
-                  </span>
-                </Header>
-              </List.Content>
-            </List.Item>
-          ))}
-        </List>
-        <form onSubmit={addTodo}>
-          <Input
-            type="text"
-            value={todoValue}
-            onChange={(e) => setTodoValue(e.target.value)}
-            placeholder="Enter a new todo"
-          />
-          <Button type="submit" primary>
-            Add Todo
-          </Button>
-        </form>
+        <TodoList
+          todos={filteredTodos}
+          toggleTodo={toggleTodo}
+          removeTodo={removeTodo}
+        />
+        <TodoForm
+          todoValue={todoValue}
+          setTodoValue={setTodoValue}
+          addTodo={addTodo}
+        />
       </Segment>
-
     </Container>
   );
 };

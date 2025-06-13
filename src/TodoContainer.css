@@ -1,0 +1,24 @@
+.todo-container {
+  max-width: 600px;
+}
+
+.todo-item {
+  padding: 20px 0px;
+}
+
+.todo-content {
+  text-align: left;
+  display: flex;
+}
+
+.todo-header {
+  display: inline-block;
+}
+
+.todo-text {
+  margin-left: 10px;
+}
+
+.todo-completed {
+  text-decoration: line-through;
+}
